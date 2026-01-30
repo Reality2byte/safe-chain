@@ -20,6 +20,7 @@ import {
   installUltimate,
   uninstallUltimate,
 } from "../src/installation/installUltimate.js";
+import {printUltimateLogs, troubleshootingExport } from "../src/ultimate/ultimateTroubleshooting.js";
 
 /** @type {string} */
 // This checks the current file's dirname in a way that's compatible with:
@@ -71,6 +72,14 @@ if (tool) {
   if (subCommand === "uninstall") {
     (async () => {
       await uninstallUltimate();
+    })();
+  } else if (subCommand === "troubleshooting-logs") {
+    (async () => {
+      await printUltimateLogs();
+    })();
+  } else if (subCommand === "troubleshooting-export") {
+    (async () => {
+      await troubleshootingExport();
     })();
   } else {
     (async () => {
@@ -135,6 +144,16 @@ function writeHelp() {
     `- ${chalk.cyan(
       "safe-chain ultimate",
     )}: Install the ultimate version of safe-chain, enabling protection for more eco-systems.`,
+  );
+  ui.writeInformation(
+    `- ${chalk.cyan(
+      "safe-chain ultimate troubleshooting-logs",
+    )}: Prints standard and error logs for safe-chain ultimate and it's proxy.`,
+  );
+  ui.writeInformation(
+    `- ${chalk.cyan(
+      "safe-chain ultimate troubleshooting-export",
+    )}: Creates a zip archive of useful data for troubleshooting safe-chain ultimate, that can be shared with our support team.`,
   );
   ui.writeInformation(
     `- ${chalk.cyan(
