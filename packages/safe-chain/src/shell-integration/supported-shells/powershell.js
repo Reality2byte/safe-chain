@@ -45,9 +45,7 @@ async function setup() {
     await validatePowerShellExecutionPolicy(executableName);
   if (!isValid) {
     throw new Error(
-      `PowerShell execution policy is set to '${policy}', which prevents safe-chain from running. ` +
-        `To fix this, open PowerShell as Administrator and run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned. ` +
-        `For more information, see: https://github.com/AikidoSec/safe-chain/blob/main/docs/troubleshooting.md#powershell-execution-policy-blocks-scripts-windows`,
+      `PowerShell execution policy is set to '${policy}', which prevents safe-chain from running.\n\nTo fix this, open PowerShell as Administrator and run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned. `,
     );
   }
 
