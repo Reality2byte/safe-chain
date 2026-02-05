@@ -258,11 +258,15 @@ export function validatePowerShellExecutionPolicy(shellExecutableName) {
 
   try {
     // Security: Use literal command string, no interpolation
-    const policy = execSync('-Command "Get-ExecutionPolicy"', {
-      encoding: "utf8",
-      shell: shellExecutableName,
-      timeout: 5000, // 5 second timeout
-    }).trim();
+    // Import the Security module first - works for both powershell.exe and pwsh.exe
+    const policy = execSync(
+      "Import-Module Microsoft.PowerShell.Security; Get-ExecutionPolicy",
+      {
+        encoding: "utf8",
+        shell: shellExecutableName,
+        timeout: 5000, // 5 second timeout
+      }
+    ).trim();
 
     const acceptablePolicies = ["RemoteSigned", "Unrestricted", "Bypass"];
     return {
