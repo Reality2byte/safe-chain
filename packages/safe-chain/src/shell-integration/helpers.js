@@ -269,7 +269,7 @@ export function validatePowerShellExecutionPolicy(shellExecutableName) {
       isValid: acceptablePolicies.includes(policy),
       policy: policy,
     };
-  } catch (/** @type {any} */ error) {
+  } catch {
     // If we can't check the policy, return false to be safe
     return { isValid: false, policy: "Unknown" };
   }
