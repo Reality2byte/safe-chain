@@ -258,7 +258,7 @@ export function validatePowerShellExecutionPolicy(shellExecutableName) {
 
   try {
     // Security: Use literal command string, no interpolation
-    const policy = execSync("Get-ExecutionPolicy", {
+    const policy = execSync('-Command "Get-ExecutionPolicy"', {
       encoding: "utf8",
       shell: shellExecutableName,
       timeout: 5000, // 5 second timeout
