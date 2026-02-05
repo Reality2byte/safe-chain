@@ -258,10 +258,30 @@ export async function validatePowerShellExecutionPolicy(shellExecutableName) {
   }
 
   try {
-    const commandResult = await safeSpawn(shellExecutableName, [
-      "-Command",
-      "Get-ExecutionPolicy",
-    ]);
+    const spawnOptions = {};
+
+    // For Windows PowerShell (5.1), clean PSModulePath to avoid conflicts with PowerShell 7 modules
+    // When PowerShell 7 is installed, it adds its module paths to PSModulePath, causing
+    // Windows PowerShell to try loading incompatible PowerShell 7 modules (TypeData conflicts)
+    if (shellExecutableName === "powershell") {
+      const userProfile = process.env.USERPROFILE || "";
+      const cleanPSModulePath = [
+        path.join(userProfile, "Documents", "WindowsPowerShell", "Modules"),
+        "C:\\Program Files\\WindowsPowerShell\\Modules",
+        "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+      ].join(";");
+
+      spawnOptions.env = {
+        ...process.env,
+        PSModulePath: cleanPSModulePath,
+      };
+    }
+
+    const commandResult = await safeSpawn(
+      shellExecutableName,
+      ["-Command", "Get-ExecutionPolicy"],
+      spawnOptions
+    );
 
     const policy = commandResult.stdout.trim();
 
