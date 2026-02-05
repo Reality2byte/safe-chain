@@ -286,6 +286,7 @@ iex "& { $(iwr 'https://github.com/AikidoSec/safe-chain/releases/latest/download
 - ✅ **CircleCI**
 - ✅ **Jenkins**
 - ✅ **Bitbucket Pipelines**
+- ✅ **GitLab Pipelines**
 
 ## GitHub Actions Example
 
@@ -384,13 +385,75 @@ steps:
   - step:
       name: Install
       script:
-        - npm install -g @aikidosec/safe-chain
-        - safe-chain setup-ci
+        - curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh -s -- --ci
         - export PATH=~/.safe-chain/shims:$PATH
         - npm ci
 ```
 
 After setup, all subsequent package manager commands in your CI pipeline will automatically be protected by Aikido Safe Chain's malware detection.
+
+## GitLab Pipelines Example
+
+To add safe-chain in GitLab pipelines, you need to install it in the image running the pipeline. This can be done by:
+
+1. Define a dockerfile to run your build
+
+   ```dockerfile
+   FROM node:lts
+
+   # Install safe-chain
+   RUN curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh -s -- --ci
+
+   # Add safe-chain to PATH
+   ENV PATH="/root/.safe-chain/shims:/root/.safe-chain/bin:${PATH}"
+   ```
+
+2. Build the Docker image in your CI pipeline
+
+   ```yaml
+   build-image:
+     stage: build-image
+     image: docker:latest
+     services:
+       - docker:dind
+     script:
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+       - docker build -t $CI_REGISTRY_IMAGE:latest .
+       - docker push $CI_REGISTRY_IMAGE:latest
+   ```
+
+3. Use the image in your pipeline:
+   ```yaml
+   npm-ci:
+     stage: install
+     image: $CI_REGISTRY_IMAGE:latest
+     script:
+       - npm ci
+   ```
+
+The full pipeline for this example looks like this:
+
+```yaml
+stages:
+  - build-image
+  - install
+
+build-image:
+  stage: build-image
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+npm-ci:
+  stage: install
+  image: $CI_REGISTRY_IMAGE:latest
+  script:
+    - npm ci
+```
 
 # Troubleshooting
 
