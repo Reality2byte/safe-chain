@@ -31,28 +31,6 @@ function Write-Error-Custom {
     exit 1
 }
 
-# Check if the PowerShell execution policy allows script execution
-function Test-ExecutionPolicy {
-    $policy = Get-ExecutionPolicy
-    $acceptablePolicies = @('RemoteSigned', 'Unrestricted', 'Bypass')
-    return $acceptablePolicies -contains $policy
-}
-
-
-if (-not (Test-ExecutionPolicy)) {
-    $currentPolicy = Get-ExecutionPolicy
-    Write-Error-Custom @"
-PowerShell execution policy is set to '$currentPolicy', which prevents safe-chain from running.
-
-The execution policy must be at least 'RemoteSigned' to allow safe-chain's initialization script to run.
-
-To fix this, open PowerShell as Administrator and run:
-  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-
-Then restart this installation.
-"@
-}
-
 # Get currently installed version of safe-chain
 function Get-InstalledVersion {
     # Check if safe-chain command exists
@@ -179,8 +157,7 @@ function Install-SafeChain {
         Write-Warn ""
         if ($ci) {
             Write-Warn "  iex `"& { `$(iwr 'https://github.com/AikidoSec/safe-chain/releases/download/$env:SAFE_CHAIN_VERSION/install-safe-chain.ps1' -UseBasicParsing) } -ci`""
-        }
-        else {
+        } else {
             Write-Warn "  iex (iwr `"https://github.com/AikidoSec/safe-chain/releases/download/$env:SAFE_CHAIN_VERSION/install-safe-chain.ps1`" -UseBasicParsing)"
         }
         Write-Warn ""
