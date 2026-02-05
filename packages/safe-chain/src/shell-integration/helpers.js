@@ -1,8 +1,9 @@
-import { spawnSync, execSync } from "child_process";
+import { spawnSync } from "child_process";
 import * as os from "os";
 import fs from "fs";
 import path from "path";
 import { ECOSYSTEM_JS, ECOSYSTEM_PY } from "../config/settings.js";
+import { safeSpawn } from "../utils/safeSpawn.js";
 
 /**
  * @typedef {Object} AikidoTool
@@ -247,9 +248,9 @@ function createFileIfNotExists(filePath) {
 /**
  * Checks if PowerShell execution policy allows script execution
  * @param {string} shellExecutableName - The name of the PowerShell executable ("pwsh" or "powershell")
- * @returns {{isValid: boolean, policy: string}} validation result
+ * @returns {Promise<{isValid: boolean, policy: string}>} validation result
  */
-export function validatePowerShellExecutionPolicy(shellExecutableName) {
+export async function validatePowerShellExecutionPolicy(shellExecutableName) {
   // Security: Only allow known shell executables
   const validShells = ["pwsh", "powershell"];
   if (!validShells.includes(shellExecutableName)) {
@@ -257,16 +258,12 @@ export function validatePowerShellExecutionPolicy(shellExecutableName) {
   }
 
   try {
-    // Security: Use literal command string, no interpolation
-    // Import the Security module first - works for both powershell.exe and pwsh.exe
-    const policy = execSync(
-      "Import-Module Microsoft.PowerShell.Security; Get-ExecutionPolicy",
-      {
-        encoding: "utf8",
-        shell: shellExecutableName,
-        timeout: 5000, // 5 second timeout
-      }
-    ).trim();
+    const commandResult = await safeSpawn(shellExecutableName, [
+      "-Command",
+      "Get-ExecutionPolicy",
+    ]);
+
+    const policy = commandResult.stdout.trim();
 
     const acceptablePolicies = ["RemoteSigned", "Unrestricted", "Bypass"];
     return {

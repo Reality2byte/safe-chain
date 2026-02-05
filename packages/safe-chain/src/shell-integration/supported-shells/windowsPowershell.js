@@ -26,27 +26,28 @@ function teardown(tools) {
     // Remove any existing alias for the tool
     removeLinesMatchingPattern(
       startupFile,
-      new RegExp(`^Set-Alias\\s+${tool}\\s+`)
+      new RegExp(`^Set-Alias\\s+${tool}\\s+`),
     );
   }
 
   // Remove the line that sources the safe-chain PowerShell initialization script
   removeLinesMatchingPattern(
     startupFile,
-    /^\.\s+["']?\$HOME[/\\].safe-chain[/\\]scripts[/\\]init-pwsh\.ps1["']?/
+    /^\.\s+["']?\$HOME[/\\].safe-chain[/\\]scripts[/\\]init-pwsh\.ps1["']?/,
   );
 
   return true;
 }
 
-function setup() {
+async function setup() {
   // Check execution policy
-  const { isValid, policy } = validatePowerShellExecutionPolicy(executableName);
+  const { isValid, policy } =
+    await validatePowerShellExecutionPolicy(executableName);
   if (!isValid) {
     throw new Error(
       `PowerShell execution policy is set to '${policy}', which prevents safe-chain from running. ` +
         `To fix this, open PowerShell as Administrator and run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned. ` +
-        `For more information, see: https://github.com/AikidoSec/safe-chain/blob/main/docs/troubleshooting.md#powershell-execution-policy-blocks-scripts-windows`
+        `For more information, see: https://github.com/AikidoSec/safe-chain/blob/main/docs/troubleshooting.md#powershell-execution-policy-blocks-scripts-windows`,
     );
   }
 
@@ -54,7 +55,7 @@ function setup() {
 
   addLineToFile(
     startupFile,
-    `. "$HOME\\.safe-chain\\scripts\\init-pwsh.ps1" # Safe-chain PowerShell initialization script`
+    `. "$HOME\\.safe-chain\\scripts\\init-pwsh.ps1" # Safe-chain PowerShell initialization script`,
   );
 
   return true;
@@ -68,7 +69,7 @@ function getStartupFile() {
     }).trim();
   } catch (/** @type {any} */ error) {
     throw new Error(
-      `Command failed: ${startupFileCommand}. Error: ${error.message}`
+      `Command failed: ${startupFileCommand}. Error: ${error.message}`,
     );
   }
 }

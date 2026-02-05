@@ -76,8 +76,8 @@ describe("Windows PowerShell shell integration", () => {
   });
 
   describe("setup", () => {
-    it("should add init-pwsh.ps1 source line", () => {
-      const result = windowsPowershell.setup();
+    it("should add init-pwsh.ps1 source line", async () => {
+      const result = await windowsPowershell.setup();
       assert.strictEqual(result, true);
 
       const content = fs.readFileSync(mockStartupFile, "utf-8");
@@ -175,9 +175,9 @@ describe("Windows PowerShell shell integration", () => {
   });
 
   describe("integration tests", () => {
-    it("should handle complete setup and teardown cycle", () => {
+    it("should handle complete setup and teardown cycle", async () => {
       // Setup
-      windowsPowershell.setup();
+      await windowsPowershell.setup();
       let content = fs.readFileSync(mockStartupFile, "utf-8");
       assert.ok(
         content.includes('. "$HOME\\.safe-chain\\scripts\\init-pwsh.ps1"'),
@@ -191,10 +191,10 @@ describe("Windows PowerShell shell integration", () => {
       );
     });
 
-    it("should handle multiple setup calls", () => {
-      windowsPowershell.setup();
+    it("should handle multiple setup calls", async () => {
+      await windowsPowershell.setup();
       windowsPowershell.teardown(knownAikidoTools);
-      windowsPowershell.setup();
+      await windowsPowershell.setup();
 
       const content = fs.readFileSync(mockStartupFile, "utf-8");
       const sourceMatches = (
@@ -206,13 +206,13 @@ describe("Windows PowerShell shell integration", () => {
   });
 
   describe("execution policy", () => {
-    it(`should throw for restricted policies`, () => {
+    it(`should throw for restricted policies`, async () => {
       executionPolicyResult = {
         isValid: false,
         policy: "Restricted",
       };
 
-      assert.throws(
+      await assert.rejects(
         () => windowsPowershell.setup(),
         (err) =>
           err.message.startsWith(
