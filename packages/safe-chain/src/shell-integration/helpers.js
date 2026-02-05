@@ -258,11 +258,10 @@ export async function validatePowerShellExecutionPolicy(shellExecutableName) {
   }
 
   try {
-    const spawnOptions = {};
-
     // For Windows PowerShell (5.1), clean PSModulePath to avoid conflicts with PowerShell 7 modules
     // When PowerShell 7 is installed, it adds its module paths to PSModulePath, causing
     // Windows PowerShell to try loading incompatible PowerShell 7 modules (TypeData conflicts)
+    let spawnOptions;
     if (shellExecutableName === "powershell") {
       const userProfile = process.env.USERPROFILE || "";
       const cleanPSModulePath = [
@@ -271,10 +270,14 @@ export async function validatePowerShellExecutionPolicy(shellExecutableName) {
         "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
       ].join(";");
 
-      spawnOptions.env = {
-        ...process.env,
-        PSModulePath: cleanPSModulePath,
+      spawnOptions = {
+        env: {
+          ...process.env,
+          PSModulePath: cleanPSModulePath,
+        },
       };
+    } else {
+      spawnOptions = {};
     }
 
     const commandResult = await safeSpawn(
