@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { ECOSYSTEM_JS, ECOSYSTEM_PY } from "../config/settings.js";
 import { safeSpawn } from "../utils/safeSpawn.js";
+import { ui } from "../environment/userInteraction.js";
 
 /**
  * @typedef {Object} AikidoTool
@@ -294,8 +295,10 @@ export async function validatePowerShellExecutionPolicy(shellExecutableName) {
       isValid: acceptablePolicies.includes(policy),
       policy: policy,
     };
-  } catch {
-    // If we can't check the policy, return false to be safe
+  } catch (err) {
+    ui.writeWarning(
+      `An error happened while trying to find the current executionpolicy in powershell: ${err}`,
+    );
     return { isValid: false, policy: "Unknown" };
   }
 }
