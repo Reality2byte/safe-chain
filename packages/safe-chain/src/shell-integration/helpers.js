@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process";
+import { spawnSync, execSync } from "child_process";
 import * as os from "os";
 import fs from "fs";
 import path from "path";
@@ -242,4 +242,35 @@ function createFileIfNotExists(filePath) {
   }
 
   fs.writeFileSync(filePath, "", "utf-8");
+}
+
+/**
+ * Checks if PowerShell execution policy allows script execution
+ * @param {string} shellExecutableName - The name of the PowerShell executable ("pwsh" or "powershell")
+ * @returns {{isValid: boolean, policy: string}} validation result
+ */
+export function validatePowerShellExecutionPolicy(shellExecutableName) {
+  // Security: Only allow known shell executables
+  const validShells = ["pwsh", "powershell"];
+  if (!validShells.includes(shellExecutableName)) {
+    return { isValid: false, policy: "Unknown" };
+  }
+
+  try {
+    // Security: Use literal command string, no interpolation
+    const policy = execSync("Get-ExecutionPolicy", {
+      encoding: "utf8",
+      shell: shellExecutableName,
+      timeout: 5000, // 5 second timeout
+    }).trim();
+
+    const acceptablePolicies = ["RemoteSigned", "Unrestricted", "Bypass"];
+    return {
+      isValid: acceptablePolicies.includes(policy),
+      policy: policy,
+    };
+  } catch (/** @type {any} */ error) {
+    // If we can't check the policy, return false to be safe
+    return { isValid: false, policy: "Unknown" };
+  }
 }
