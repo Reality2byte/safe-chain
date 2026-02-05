@@ -66,7 +66,6 @@ You can find all available versions on the [releases page](https://github.com/Ai
 ### Verify the installation
 
 1. **❗Restart your terminal** to start using the Aikido Safe Chain.
-
    - This step is crucial as it ensures that the shell aliases for npm, npx, yarn, pnpm, pnpx, bun, bunx, pip, pip3, poetry, uv and pipx are loaded correctly. If you do not restart your terminal, the aliases will not be available.
 
 2. **Verify the installation** by running the verification command:
@@ -159,7 +158,6 @@ You can control the output from Aikido Safe Chain using the `--safe-chain-loggin
 You can set the logging level through multiple sources (in order of priority):
 
 1. **CLI Argument** (highest priority):
-
    - `--safe-chain-logging=silent` - Suppresses all Aikido Safe Chain output except when malware is blocked. The package manager output is written to stdout as normal, and Safe Chain only writes a short message if it has blocked malware and causes the process to exit.
 
      ```shell
@@ -396,4 +394,4 @@ After setup, all subsequent package manager commands in your CI pipeline will au
 
 # Troubleshooting
 
-Having issues? See the [Troubleshooting Guide](https://github.com/AikidoSec/safe-chain/blob/main/docs/troubleshooting.md) for help with common problems.
+Having issues? See the [Troubleshooting Guide](https://help.aikido.dev/code-scanning/aikido-malware-scanning/safe-chain-troubleshooting) for help with common problems.
