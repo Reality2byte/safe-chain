@@ -40,7 +40,6 @@ function teardown(tools) {
 }
 
 async function setup() {
-  // Check execution policy
   const { isValid, policy } =
     await validatePowerShellExecutionPolicy(executableName);
   if (!isValid) {
