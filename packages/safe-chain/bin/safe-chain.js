@@ -70,39 +70,6 @@ if (tool) {
   process.exit(0);
 } else if (command === "setup") {
   setup();
-} else if (command === "ultimate") {
-  const cliArgs = initializeCliArguments(process.argv.slice(2));
-  const subCommand = cliArgs[1];
-  if (subCommand === "uninstall") {
-    guardCliArgsMaxLenght(2, cliArgs, "safe-chain ultimate uninstall");
-    (async () => {
-      await uninstallUltimate();
-    })();
-  } else if (subCommand === "troubleshooting-logs") {
-    guardCliArgsMaxLenght(
-      2,
-      cliArgs,
-      "safe-chain ultimate troubleshooting-logs",
-    );
-    (async () => {
-      await printUltimateLogs();
-    })();
-  } else if (subCommand === "troubleshooting-export") {
-    guardCliArgsMaxLenght(
-      2,
-      cliArgs,
-      "safe-chain ultimate troubleshooting-export",
-    );
-    (async () => {
-      await troubleshootingExport();
-    })();
-  } else {
-    guardCliArgsMaxLenght(1, cliArgs, "safe-chain ultimate");
-    // Install command = when no subcommand is provided (safe-chain ultimate)
-    (async () => {
-      await installUltimate();
-    })();
-  }
 } else if (command === "teardown") {
   teardown();
   teardownDirectories();
@@ -119,22 +86,6 @@ if (tool) {
   writeHelp();
 
   process.exit(1);
-}
-
-/**
- * @param {Number} maxLength
- * @param {String[]} args
- * @param {String} command
- */
-function guardCliArgsMaxLenght(maxLength, args, command) {
-  if (args.length > maxLength) {
-    ui.writeError(`Unexpected number of arguments for command ${command}.`);
-    ui.emptyLine();
-
-    writeHelp();
-
-    process.exit(1);
-  }
 }
 
 function writeHelp() {
@@ -169,29 +120,6 @@ function writeHelp() {
     `- ${chalk.cyan("safe-chain --version")} (or ${chalk.cyan(
       "-v",
     )}): Display the current version of safe-chain.`,
-  );
-  ui.emptyLine();
-  ui.writeInformation(chalk.bold("Ultimate commands:"));
-  ui.emptyLine();
-  ui.writeInformation(
-    `- ${chalk.cyan(
-      "safe-chain ultimate",
-    )}: Install the ultimate version of safe-chain, enabling protection for more eco-systems.`,
-  );
-  ui.writeInformation(
-    `- ${chalk.cyan(
-      "safe-chain ultimate troubleshooting-logs",
-    )}: Prints standard and error logs for safe-chain ultimate and it's proxy.`,
-  );
-  ui.writeInformation(
-    `- ${chalk.cyan(
-      "safe-chain ultimate troubleshooting-export",
-    )}: Creates a zip archive of useful data for troubleshooting safe-chain ultimate, that can be shared with our support team.`,
-  );
-  ui.writeInformation(
-    `- ${chalk.cyan(
-      "safe-chain ultimate uninstall",
-    )}: Uninstall the ultimate version of safe-chain.`,
   );
   ui.emptyLine();
 }
