@@ -88,7 +88,7 @@ function writeHelp() {
   ui.writeInformation(
     `Available commands: ${chalk.cyan("setup")}, ${chalk.cyan(
       "teardown",
-    )}, ${chalk.cyan("setup-ci")}, ${chalk.cyan("ultimate")}, ${chalk.cyan("help")}, ${chalk.cyan(
+    )}, ${chalk.cyan("setup-ci")}, ${chalk.cyan("help")}, ${chalk.cyan(
       "--version",
     )}`,
   );
