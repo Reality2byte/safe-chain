@@ -16,14 +16,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { knownAikidoTools } from "../src/shell-integration/helpers.js";
-import {
-  installUltimate,
-  uninstallUltimate,
-} from "../src/installation/installUltimate.js";
-import {
-  printUltimateLogs,
-  troubleshootingExport,
-} from "../src/ultimate/ultimateTroubleshooting.js";
 
 /** @type {string} */
 // This checks the current file's dirname in a way that's compatible with:
