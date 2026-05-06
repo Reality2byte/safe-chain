@@ -1,5 +1,7 @@
 # Troubleshooting
 
+This guide helps you diagnose and resolve common issues with Aikido Safe Chain.
+
 ## Verification & Diagnostics
 
 **Check Installation**
