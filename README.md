@@ -548,4 +548,16 @@ npm-ci:
 
 # Troubleshooting
 
-Having issues? See the [Troubleshooting Guide](https://help.aikido.dev/code-scanning/aikido-malware-scanning/safe-chain-troubleshooting) for help with common problems.
+Having issues? See the [Troubleshooting Guide](./docs/troubleshooting) for help with common problems.
+
+# Report Issues
+
+If you encounter problems:
+
+1. Visit [GitHub Issues](https://github.com/AikidoSec/safe-chain/issues)
+2. Include:
+   * Operating system and version
+   * Shell type and version
+   * `safe-chain --version` output
+   * Output from verification commands
+   * Verbose logs of the failing command (add the `--safe-chain-logging=verbose` argument)
