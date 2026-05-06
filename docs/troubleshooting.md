@@ -1,52 +1,39 @@
 # Troubleshooting
 
-This guide helps you diagnose and resolve common issues with Aikido Safe Chain.
-
 ## Verification & Diagnostics
 
-### Check Installation
+**Check Installation**
 
 ```bash
 # Check version
 safe-chain --version
 ```
 
-### Verify Shell Integration
+**Verify Shell Integration**
 
 Run the verification command for your package manager:
 
 ```bash
 npm safe-chain-verify
 pnpm safe-chain-verify
-pip safe-chain-verify
-uv safe-chain-verify
-
-# Any other supported package manager: {packagemanager} safe-chain-verify
 ```
 
+```
 Expected output: `OK: Safe-chain works!`
+```
 
-### Test Malware Blocking
+**Test Malware Blocking**
 
 Verify that malware detection is working:
-
-**For JavaScript/Node.js:**
-
-```bash
-npm install safe-chain-test
 ```
-
-**For Python:**
-
-```bash
-pip3 install safe-chain-pi-test
+npm install safe-chain-test
 ```
 
 These test packages are flagged as malware and should be blocked by Safe Chain.
 
-**If the test package installs successfully instead of being blocked**, see [Malware Not Being Blocked](#malware-not-being-blocked) below.
+**If the test package installs successfully instead of being blocked**, see Malware Not Being Blocked below.
 
-### Logging Options
+## Logging Options
 
 Use logging flags or environment variables to get more information:
 
@@ -74,41 +61,39 @@ Safe-chain blocks malicious packages by intercepting network requests to package
 
 When a package is already cached locally, the package manager skips downloading it from the registry, which bypasses the proxy.
 
-**Resolution Steps:**
+**Resolution Steps**
 
-1. **Clear your package manager's cache:**
+1) Clear your package manager's cache
 
-   ```bash
-   # For npm
-   npm cache clean --force
+```bash
+# For npm
+npm cache clean --force
 
-   # For pnpm
-   pnpm store prune
+# For pnpm
+pnpm store prune
 
-   # For yarn (classic)
-   yarn cache clean
+# For yarn (classic)
+yarn cache clean
 
-   # For yarn (berry/v2+)
-   yarn cache clean --all
+# For yarn (berry/v2+)
+yarn cache clean --all
 
-   # For bun
-   bun pm cache rm
-   ```
+# For bun
+bun pm cache rm
+```
 
-   > **⚠️ Warning:** Cache clearing is safe but will remove all cached packages. Subsequent installations will need to re-download packages. In CI/CD environments or monorepos, this may affect build times.
+2) Clean local installation artifacts:
 
-2. **Clean local installation artifacts:**
+```bash
+# Remove node_modules if you want a completely fresh install
+rm -rf node_modules
+```
 
-   ```bash
-   # Remove node_modules if you want a completely fresh install
-   rm -rf node_modules
-   ```
+3) Re-test malware blocking:
 
-3. **Re-test malware blocking:**
-
-   ```bash
-   npm install safe-chain-test    # Should be blocked
-   ```
+```bash
+npm install safe-chain-test    # Should be blocked
+```
 
 ### Shell Aliases Not Working After Installation
 
@@ -128,10 +113,10 @@ Should show: `npm is a function`
 
 Check that your startup file sources safe-chain scripts from `~/.safe-chain/scripts/`:
 
-- Bash: `~/.bashrc`
-- Zsh: `~/.zshrc`
-- Fish: `~/.config/fish/config.fish`
-- PowerShell: `$PROFILE`
+* Bash: `~/.bashrc`
+* Zsh: `~/.zshrc`
+* Fish: `~/.config/fish/config.fish`
+* PowerShell: `$PROFILE`
 
 ### "Command Not Found: safe-chain"
 
@@ -162,37 +147,39 @@ FullyQualifiedErrorId : UnauthorizedAccess
 
 **Cause:** Windows PowerShell's default execution policy (`Restricted`) blocks all script execution, including safe-chain's initialization script that's sourced from your PowerShell profile.
 
-**Resolution:**
+**Resolution**
 
-1. **Set the execution policy to allow local scripts:**
+1) Set the execution policy to allow local scripts
 
-   Open PowerShell as Administrator and run:
+Open PowerShell as Administrator and run:
 
-   ```powershell
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-   ```
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
 
-   This allows:
-   - Local scripts (like safe-chain's) to run without signing
-   - Downloaded scripts to run only if signed by a trusted publisher
+This allows:
 
-2. **Restart PowerShell** and verify the error is resolved.
+* Local scripts (like safe-chain's) to run without signing
+* Downloaded scripts to run only if signed by a trusted publisher
 
-> **Note:** `RemoteSigned` is Microsoft's recommended execution policy for client computers. It provides a good balance between security and usability.
+2) Restart PowerShell and verify the error is resolved.
+
+> [!IMPORTANT]
+> `RemoteSigned` is Microsoft's recommended execution policy for client computers. It provides a good balance between security and usability.
 
 ### Shell Aliases Persist After Uninstallation
 
 **Symptom:** safe-chain commands still active after running uninstall script
 
-**Steps:**
+**Steps**
 
 1. Run `safe-chain teardown` (if binary still exists)
 2. Restart your terminal
 3. If still present, manually edit shell config files:
-   - Bash: `~/.bashrc`
-   - Zsh: `~/.zshrc`
-   - Fish: `~/.config/fish/config.fish`
-   - PowerShell: `$PROFILE`
+   * Bash: `~/.bashrc`
+   * Zsh: `~/.zshrc`
+   * Fish: `~/.config/fish/config.fish`
+   * PowerShell: `$PROFILE`
 4. Remove lines that source scripts from `~/.safe-chain/scripts/`
 5. Restart terminal again
 
@@ -217,10 +204,10 @@ type pip
 
 **Expected `which` output:**
 
-- Standalone binary (correct): `~/.safe-chain/bin/safe-chain` or `/Users/<username>/.safe-chain/bin/safe-chain`
-- npm global (outdated): path containing `node_modules` or nvm version paths
+* Standalone binary (correct): `~/.safe-chain/bin/safe-chain` or `/Users/<username>/.safe-chain/bin/safe-chain`
+* npm global (outdated): path containing `node_modules` or nvm version paths
 
-If `which` shows an npm installation, see [Check for Conflicting Installations](#check-for-conflicting-installations).
+If `which` shows an npm installation, see Check for Conflicting Installations.
 
 ### Check Shell Integration
 
@@ -259,23 +246,23 @@ for version in $(nvm list | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+'); do
 done
 ```
 
-## Manual Cleanup
+### Manual Cleanup
 
 > **Note:** The install and uninstall scripts automatically handle these cleanup steps. Use these manual commands only if automatic cleanup fails.
 
-### Remove npm Global Installation
+#### Remove npm Global Installation
 
 ```bash
 npm uninstall -g @aikidosec/safe-chain
 ```
 
-### Remove Volta Installation
+#### Remove Volta Installation
 
 ```bash
 volta uninstall @aikidosec/safe-chain
 ```
 
-### Remove nvm Installations (All Versions)
+#### Remove nvm Installations (All Versions)
 
 ```bash
 # Automated approach
@@ -288,34 +275,22 @@ nvm use <version>
 npm uninstall -g @aikidosec/safe-chain
 ```
 
-### Clean Shell Configuration Files
+#### Clean Shell Configuration Files
 
 Manually remove safe-chain entries from:
 
-- Bash: `~/.bashrc`
-- Zsh: `~/.zshrc`
-- Fish: `~/.config/fish/config.fish`
-- PowerShell: `$PROFILE`
+* Bash: `~/.bashrc`
+* Zsh: `~/.zshrc`
+* Fish: `~/.config/fish/config.fish`
+* PowerShell: `$PROFILE`
 
 Look for and remove:
 
-- Lines sourcing from `~/.safe-chain/scripts/`
-- Any safe-chain related function definitions
+* Lines sourcing from `~/.safe-chain/scripts/`
+* Any safe-chain related function definitions
 
-### Remove Installation Directory
+#### Remove Installation Directory
 
 ```bash
 rm -rf ~/.safe-chain
 ```
-
-### Report Issues
-
-If you encounter problems:
-
-1. Visit [GitHub Issues](https://github.com/AikidoSec/safe-chain/issues)
-2. Include:
-   - Operating system and version
-   - Shell type and version
-   - `safe-chain --version` output
-   - Output from verification commands
-   - Verbose logs of the failing command (add the `--safe-chain-logging=verbose` argument)
