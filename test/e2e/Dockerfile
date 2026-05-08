@@ -47,7 +47,7 @@ RUN volta install node@${NODE_VERSION}
 RUN volta install npm@${NPM_VERSION}
 RUN volta install yarn@${YARN_VERSION}
 RUN volta install pnpm@${PNPM_VERSION}
-RUN npm install -g @microsoft/rush@${RUSH_VERSION}
+RUN volta install @microsoft/rush@${RUSH_VERSION}
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
