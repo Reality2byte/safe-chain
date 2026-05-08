@@ -9,7 +9,7 @@ import { reportCommandExecutionFailure } from "../_shared/commandErrors.js";
  */
 export async function runRushCommand(executableName, args) {
   try {
-    const env = normalizeProxyEnvironmentVariables(
+    const env = prepareRushEnvironmentVariables(
       mergeSafeChainProxyEnvironmentVariables(process.env),
     );
 
@@ -25,48 +25,17 @@ export async function runRushCommand(executableName, args) {
 }
 
 /**
- * Ensure proxy settings are visible to package manager variants that rely on
- * lowercase or npm/yarn-specific environment variables.
- *
  * @param {Record<string, string>} env
  * @returns {Record<string, string>}
  */
-function normalizeProxyEnvironmentVariables(env) {
-  const normalized = {
+function prepareRushEnvironmentVariables(env) {
+  const prepared = {
     ...env,
   };
 
-  if (normalized.HTTPS_PROXY && !normalized.HTTP_PROXY) {
-    normalized.HTTP_PROXY = normalized.HTTPS_PROXY;
+  if (prepared.HTTPS_PROXY && !prepared.HTTP_PROXY) {
+    prepared.HTTP_PROXY = prepared.HTTPS_PROXY;
   }
 
-  if (normalized.HTTP_PROXY && !normalized.http_proxy) {
-    normalized.http_proxy = normalized.HTTP_PROXY;
-  }
-
-  if (normalized.HTTPS_PROXY && !normalized.https_proxy) {
-    normalized.https_proxy = normalized.HTTPS_PROXY;
-  }
-
-  if (normalized.HTTP_PROXY && !normalized.npm_config_proxy) {
-    normalized.npm_config_proxy = normalized.HTTP_PROXY;
-  }
-
-  if (normalized.HTTPS_PROXY && !normalized.npm_config_https_proxy) {
-    normalized.npm_config_https_proxy = normalized.HTTPS_PROXY;
-  }
-
-  if (normalized.HTTP_PROXY && !normalized.NPM_CONFIG_PROXY) {
-    normalized.NPM_CONFIG_PROXY = normalized.HTTP_PROXY;
-  }
-
-  if (normalized.HTTPS_PROXY && !normalized.NPM_CONFIG_HTTPS_PROXY) {
-    normalized.NPM_CONFIG_HTTPS_PROXY = normalized.HTTPS_PROXY;
-  }
-
-  if (normalized.HTTPS_PROXY && !normalized.YARN_HTTPS_PROXY) {
-    normalized.YARN_HTTPS_PROXY = normalized.HTTPS_PROXY;
-  }
-
-  return normalized;
+  return prepared;
 }

@@ -75,13 +75,6 @@ describe("runRushCommand", () => {
     assert.strictEqual(options.stdio, "inherit");
     assert.strictEqual(options.env.HTTPS_PROXY, "http://localhost:8080");
     assert.strictEqual(options.env.HTTP_PROXY, "http://localhost:8080");
-    assert.strictEqual(options.env.https_proxy, "http://localhost:8080");
-    assert.strictEqual(options.env.http_proxy, "http://localhost:8080");
-    assert.strictEqual(options.env.npm_config_https_proxy, "http://localhost:8080");
-    assert.strictEqual(options.env.npm_config_proxy, "http://localhost:8080");
-    assert.strictEqual(options.env.NPM_CONFIG_HTTPS_PROXY, "http://localhost:8080");
-    assert.strictEqual(options.env.NPM_CONFIG_PROXY, "http://localhost:8080");
-    assert.strictEqual(options.env.YARN_HTTPS_PROXY, "http://localhost:8080");
     assert.ok(mergeCalls.length >= 1, "proxy env merge should be called");
   });
 
