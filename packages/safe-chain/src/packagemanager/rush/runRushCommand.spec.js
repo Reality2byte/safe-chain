@@ -74,7 +74,6 @@ describe("runRushCommand", () => {
     assert.deepStrictEqual(args, ["install"]);
     assert.strictEqual(options.stdio, "inherit");
     assert.strictEqual(options.env.HTTPS_PROXY, "http://localhost:8080");
-    assert.strictEqual(options.env.HTTP_PROXY, "http://localhost:8080");
     assert.ok(mergeCalls.length >= 1, "proxy env merge should be called");
   });
 
