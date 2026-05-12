@@ -1,9 +1,16 @@
 import { describe, it, before, beforeEach, afterEach } from "node:test";
 import { DockerTestContainer } from "./DockerTestContainer.js";
+import {
+  buildRushConfig,
+  resolveRushVersions,
+  writeTextFile,
+} from "./utils/rushtestutils.mjs";
 import assert from "node:assert";
 
 describe("E2E: rushx coverage", () => {
   let container;
+  /** @type {{ rushVersion: string, pnpmVersion: string } | undefined} */
+  let resolvedVersions;
 
   before(async () => {
     DockerTestContainer.buildImage();
@@ -15,7 +22,12 @@ describe("E2E: rushx coverage", () => {
 
     const installationShell = await container.openShell("zsh");
     await installationShell.runCommand("safe-chain setup");
-    await setupRushWorkspace(installationShell);
+
+    if (!resolvedVersions) {
+      resolvedVersions = await resolveRushVersions(installationShell);
+    }
+
+    await setupRushWorkspace(installationShell, { resolvedVersions });
   });
 
   afterEach(async () => {
@@ -58,43 +70,30 @@ describe("E2E: rushx coverage", () => {
   });
 });
 
-async function setupRushWorkspace(shell) {
-  await shell.runCommand("mkdir -p /testapp/common/config/rush /testapp/apps/test-app");
-  await shell.runCommand(`cat > /testapp/common/config/rush/rush.json <<'EOF'
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-  "rushVersion": "5.175.1",
-  "pnpmVersion": "11.0.6",
-  "nodeSupportedVersionRange": ">=18.0.0",
-  "projectFolderMinDepth": 1,
-  "projectFolderMaxDepth": 2,
-  "gitPolicy": {},
-  "repository": {
-    "url": "https://example.com/testapp.git",
-    "defaultBranch": "main"
-  },
-  "eventHooks": {
-    "preRushInstall": [],
-    "postRushInstall": [],
-    "preRushBuild": [],
-    "postRushBuild": []
-  },
-  "projects": [
-    {
-      "packageName": "test-app",
-      "projectFolder": "apps/test-app"
-    }
-  ]
-}
-EOF`);
-  await shell.runCommand(`cat > /testapp/apps/test-app/package.json <<'EOF'
-{
+async function setupRushWorkspace(shell, { resolvedVersions }) {
+  const rushConfig = buildRushConfig({
+    rushVersion: resolvedVersions.rushVersion,
+    pnpmVersion: resolvedVersions.pnpmVersion,
+  });
+
+  await shell.runCommand(
+    "mkdir -p /testapp/common/config/rush /testapp/apps/test-app"
+  );
+  await writeTextFile(
+    shell,
+    "/testapp/rush.json",
+    JSON.stringify(rushConfig, null, 2)
+  );
+  await writeTextFile(
+    shell,
+    "/testapp/apps/test-app/package.json",
+    `{
   "name": "test-app",
   "version": "1.0.0",
   "scripts": {
     "install-safe": "npm install axios@1.13.0",
     "install-malicious": "npm install safe-chain-test@0.0.1-security"
   }
-}
-EOF`);
+}`
+  );
 }
