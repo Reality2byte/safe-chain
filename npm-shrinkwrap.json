@@ -2417,7 +2417,6 @@
       "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "engines": {
         "node": ">=12"
       },
@@ -3138,6 +3137,8 @@
         "aikido-poetry": "bin/aikido-poetry.js",
         "aikido-python": "bin/aikido-python.js",
         "aikido-python3": "bin/aikido-python3.js",
+        "aikido-rush": "bin/aikido-rush.js",
+        "aikido-rushx": "bin/aikido-rushx.js",
         "aikido-uv": "bin/aikido-uv.js",
         "aikido-uvx": "bin/aikido-uvx.js",
         "aikido-yarn": "bin/aikido-yarn.js",
