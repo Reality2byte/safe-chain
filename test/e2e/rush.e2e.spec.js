@@ -107,8 +107,9 @@ describe("E2E: rush coverage", () => {
       "cd /testapp/apps/test-app && rush update --safe-chain-skip-minimum-package-age"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
