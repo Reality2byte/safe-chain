@@ -77,7 +77,7 @@ jobs:
           - node_version: "20"
             npm_version: "9.0.0"
             yarn_version: "latest"
-            pnpm_version: "latest"
+            pnpm_version: "10.0.0"
           # Version pinning scenario
           - node_version: "22"
             npm_version: "10.2.0"
@@ -87,7 +87,7 @@ jobs:
           - node_version: "18"
             npm_version: "latest"
             yarn_version: "latest"
-            pnpm_version: "latest"
+            pnpm_version: "10.0.0"
           # Future compatibility (becomes LTS October 2025)
           - node_version: "24"
             npm_version: "latest"
