@@ -4,22 +4,21 @@
 // and `rushx` invocations correctly. The contents of `rush.json` are just
 // fixture noise needed to make Rush run at all — Rush's schema requires
 // exact semver for `rushVersion`/`pnpmVersion` and refuses dist-tags like
-// "latest", so we resolve those once per suite.
+// "latest", so we read both back from the binaries baked into the image.
 //
-//   * `rushVersion` is read from the `rush` binary baked into the image
-//     (Dockerfile installs `@microsoft/rush@${RUSH_VERSION:-latest}`).
-//   * `pnpmVersion` is pinned to a known-good pnpm 9 release. Rush downloads
-//     this internally into `~/.rush/...`; it's unrelated to the system
-//     pnpm exercised by the pnpm e2e suite.
-
-const PINNED_PNPM_VERSION = "9.15.9";
+//   * `rushVersion` ← `rush --version` (image installs
+//     `@microsoft/rush@${RUSH_VERSION:-latest}`).
+//   * `pnpmVersion` ← `pnpm --version` (image installs
+//     `pnpm@${PNPM_VERSION:-latest}`). Rush downloads its own copy of this
+//     into `~/.rush/...`; using the same exact version as the system pnpm
+//     just keeps the fixture in lockstep with whatever the CI matrix picks.
 
 /** Resolves the versions to put into `rush.json`. */
 export async function resolveRushVersions(shell) {
-  return {
-    rushVersion: await getInstalledRushVersion(shell),
-    pnpmVersion: PINNED_PNPM_VERSION,
-  };
+  // Sequential: the helper drives a single PTY shell.
+  const rushVersion = await getInstalledVersion(shell, "rush");
+  const pnpmVersion = await getInstalledVersion(shell, "pnpm");
+  return { rushVersion, pnpmVersion };
 }
 
 /** Builds the standard `rush.json` body for the e2e fixtures. */
@@ -58,12 +57,12 @@ export async function writeTextFile(shell, filePath, content) {
   await shell.runCommand(`printf '%s' '${encoded}' | base64 -d > ${filePath}`);
 }
 
-async function getInstalledRushVersion(shell) {
-  const { output } = await shell.runCommand("rush --version");
+async function getInstalledVersion(shell, command) {
+  const { output } = await shell.runCommand(`${command} --version`);
   const match = output.match(/\b(\d+\.\d+\.\d+)\b/);
   if (!match) {
     throw new Error(
-      `Could not determine installed Rush version. Output was:\n${output}`
+      `Could not determine installed ${command} version. Output was:\n${output}`
     );
   }
   return match[1];
