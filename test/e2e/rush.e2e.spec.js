@@ -97,8 +97,14 @@ describe("E2E: rush coverage", () => {
 }`,
     });
 
+    // `--safe-chain-skip-minimum-package-age` is needed because Rush's
+    // internal pnpm bootstrap (`npm install pnpm@<resolvedVersion>`) goes
+    // through the safe-chain proxy. When the CI matrix selects pnpm
+    // `latest`, the just-released version can be below the minimum age
+    // threshold and Rush's install would otherwise be blocked before our
+    // malicious-download assertion is reached.
     const result = await shell.runCommand(
-      "cd /testapp/apps/test-app && rush update"
+      "cd /testapp/apps/test-app && rush update --safe-chain-skip-minimum-package-age"
     );
 
     assert.ok(
