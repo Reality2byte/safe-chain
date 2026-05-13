@@ -20,7 +20,10 @@ remove_shim_from_path() {
 }
 
 if command -v safe-chain >/dev/null 2>&1; then
-  # Remove shim directory from PATH when calling {{AIKIDO_COMMAND}} to prevent infinite loops
+  # Remove shim directory from PATH when calling {{AIKIDO_COMMAND}} to prevent infinite loops.
+  # Unset PKG_EXECPATH so the yao-pkg bootstrap inside the safe-chain binary doesn't
+  # mistake argv[1] for a script path and try to resolve "{{PACKAGE_MANAGER}}" against cwd.
+  unset PKG_EXECPATH
   PATH=$(remove_shim_from_path) exec safe-chain {{PACKAGE_MANAGER}} "$@"
 else
   # safe-chain is not reachable — warn the user so they know protection is inactive
