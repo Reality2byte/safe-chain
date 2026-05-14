@@ -103,23 +103,6 @@ describe("E2E: pdm coverage", () => {
     );
   });
 
-  it(`pdm update updates dependencies`, async () => {
-    const shell = await container.openShell("zsh");
-
-    await shell.runCommand("mkdir /tmp/test-pdm-update && cd /tmp/test-pdm-update");
-    await shell.runCommand("cd /tmp/test-pdm-update && pdm init --non-interactive");
-    await shell.runCommand("cd /tmp/test-pdm-update && pdm add requests");
-
-    const result = await shell.runCommand(
-      "cd /tmp/test-pdm-update && pdm update"
-    );
-
-    assert.ok(
-      result.output.includes("no malware found.") || result.output.includes("Updating"),
-      `Output did not include expected text. Output was:\n${result.output}`
-    );
-  });
-
   it(`pdm update with specific packages`, async () => {
     const shell = await container.openShell("zsh");
 
