@@ -102,7 +102,7 @@ describe("E2E: safe-chain CLI python/pip support", () => {
 
     assert.match(
       result.output,
-      /blocked \d+ malicious package downloads/,
+      /blocked [1-9]\d* malicious package downloads/,
       `Should have blocked malware. Output was:\n${result.output}`
     );
   });

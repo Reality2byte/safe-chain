@@ -131,7 +131,7 @@ describe("E2E: uv coverage", () => {
 
     assert.match(
       result.output,
-      /blocked \d+ malicious package downloads:/,
+      /blocked [1-9]\d* malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -419,7 +419,7 @@ describe("E2E: uv coverage", () => {
 
     assert.match(
       result.output,
-      /blocked \d+ malicious package downloads:/,
+      /blocked [1-9]\d* malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -451,7 +451,7 @@ describe("E2E: uv coverage", () => {
 
     assert.match(
       result.output,
-      /blocked \d+ malicious package downloads:/,
+      /blocked [1-9]\d* malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -490,7 +490,7 @@ describe("E2E: uv coverage", () => {
 
     assert.match(
       result.output,
-      /blocked \d+ malicious package downloads:/,
+      /blocked [1-9]\d* malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
   });
