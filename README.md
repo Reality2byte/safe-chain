@@ -10,6 +10,14 @@
 - ✅ **Blocks packages newer than 48 hours** without breaking your build
 - ✅ **Tokenless, free, no build data shared**
 
+## Need protection beyond npm & PyPI?
+
+[Aikido Endpoint](https://www.aikido.dev/protect/endpoint-protection?utm_source=github.com&utm_medium=referral&utm_campaign=safechain) builds on Safe Chain, extending package and extension security across more ecosystems: **npm**, **PyPI**, **Maven**, **NuGet**, **VS Code**, **Open VSX** - (Cursor, Windsurf, Kiro, Vs Codium, ...), **Chrome extensions**, **Skills.sh AI skills** and more.
+
+Get centralized policy management, request-and-approval workflows, and visibility across every developer workstation in your org. Powered by the same Aikido Intel feed. Deploy it manually or manage it through your MDM tool (Jamf, Fleet, or Iru).
+
+---
+
 Aikido Safe Chain supports the following package managers:
 
 - 📦 **npm**
@@ -17,6 +25,8 @@ Aikido Safe Chain supports the following package managers:
 - 📦 **yarn**
 - 📦 **pnpm**
 - 📦 **pnpx**
+- 📦 **rush**
+- 📦 **rushx**
 - 📦 **bun**
 - 📦 **bunx**
 - 📦 **pip**
@@ -30,12 +40,6 @@ Aikido Safe Chain supports the following package managers:
 # Usage
 
 ![Aikido Safe Chain demo](https://raw.githubusercontent.com/AikidoSec/safe-chain/main/docs/safe-package-manager-demo.gif)
-
-# Using Safe Chain across a team?
-
-[Aikido Endpoint](https://www.aikido.dev/protect/endpoint-protection) builds on Safe Chain, extending package and extension security across more ecosystems: **npm**, **PyPI**, **Maven**, **NuGet**, **VS Code**, **Open VSX** - (Cursor, Windsurf, Kiro, Vs Codium, ...), **Chrome extensions**, **Skills.sh AI skills** and more.
-
-Get centralized policy management, request-and-approval workflows, and visibility across every developer workstation in your org. Powered by the same Aikido Intel feed. Deploy it manually or manage it through your MDM tool (Jamf, Fleet, or Iru).
 
 ## Installation
 
@@ -74,7 +78,7 @@ You can find all available versions on the [releases page](https://github.com/Ai
 ### Verify the installation
 
 1. **❗Restart your terminal** to start using the Aikido Safe Chain.
-   - This step is crucial as it ensures that the shell aliases for npm, npx, yarn, pnpm, pnpx, bun, bunx, pip, pip3, poetry, uv, uvx, pipx and pdm are loaded correctly. If you do not restart your terminal, the aliases will not be available.
+   - This step is crucial as it ensures that the shell aliases for npm, npx, yarn, pnpm, pnpx, rush, rushx, bun, bunx, pip, pip3, poetry, uv, uvx, pipx and pdm are loaded correctly. If you do not restart your terminal, the aliases will not be available.
 
 2. **Verify the installation** by running the verification command:
 
@@ -105,7 +109,7 @@ You can find all available versions on the [releases page](https://github.com/Ai
 
    - The output should show that Aikido Safe Chain is blocking the installation of these test packages as they are flagged as malware.
 
-When running `npm`, `npx`, `yarn`, `pnpm`, `pnpx`, `bun`, `bunx`, `pip`, `pip3`, `uv`, `uvx`, `poetry`, `pipx` and `pdm` commands, the Aikido Safe Chain will automatically check for malware in the packages you are trying to install. It also intercepts Python module invocations for pip when available (e.g., `python -m pip install ...`, `python3 -m pip download ...`). If any malware is detected, it will prompt you to exit the command.
+When running `npm`, `npx`, `yarn`, `pnpm`, `pnpx`, `rush`, `rushx`, `bun`, `bunx`, `pip`, `pip3`, `uv`, `uvx`, `poetry`, `pipx` and `pdm` commands, the Aikido Safe Chain will automatically check for malware in the packages you are trying to install. It also intercepts Python module invocations for pip when available (e.g., `python -m pip install ...`, `python3 -m pip download ...`). If any malware is detected, it will prompt you to exit the command.
 
 You can check the installed version by running:
 
@@ -117,7 +121,7 @@ safe-chain --version
 
 ### Malware Blocking
 
-The Aikido Safe Chain works by running a lightweight proxy server that intercepts package downloads from the npm registry and PyPI. When you run npm, npx, yarn, pnpm, pnpx, bun, bunx, pip, pip3, uv, uvx, poetry or pipx commands, all package downloads are routed through this local proxy, which verifies packages in real-time against **[Aikido Intel - Open Sources Threat Intelligence](https://intel.aikido.dev/?tab=malware)**. If malware is detected in any package (including deep dependencies), the proxy blocks the download before the malicious code reaches your machine.
+The Aikido Safe Chain works by running a lightweight proxy server that intercepts package downloads from the npm registry and PyPI. When you run npm, npx, yarn, pnpm, pnpx, rush, rushx, bun, bunx, pip, pip3, uv, uvx, poetry, pipx or pdm commands, all package downloads are routed through this local proxy, which verifies packages in real-time against **[Aikido Intel - Open Sources Threat Intelligence](https://intel.aikido.dev/?tab=malware)**. If malware is detected in any package (including deep dependencies), the proxy blocks the download before the malicious code reaches your machine.
 
 ### Minimum package age
 
@@ -136,7 +140,7 @@ By default, the minimum package age is 48 hours. This provides an additional sec
 
 ### Shell Integration
 
-The Aikido Safe Chain integrates with your shell to provide a seamless experience when using npm, npx, yarn, pnpm, pnpx, bun, bunx, and Python package managers (pip, uv, uvx, poetry, pipx). It sets up aliases for these commands so that they are wrapped by the Aikido Safe Chain commands, which manage the proxy server before executing the original commands. We currently support:
+The Aikido Safe Chain integrates with your shell to provide a seamless experience when using npm, npx, yarn, pnpm, pnpx, rush, rushx, bun, bunx, and Python package managers (pip, uv, uvx, poetry, pipx, pdm). It sets up aliases for these commands so that they are wrapped by the Aikido Safe Chain commands, which manage the proxy server before executing the original commands. We currently support:
 
 - ✅ **Bash**
 - ✅ **Zsh**
@@ -288,6 +292,12 @@ You can set custom registries through environment variable or config file. Both 
      }
    }
    ```
+
+## PYPI Configuration File
+
+If you rely on a `pip.conf` file for pip configuration you must point pip at it explicitly via the `PIP_CONFIG_FILE` environment variable so Safe Chain can merge it.
+
+Safe Chain runs pip behind its MITM proxy and writes a temporary pip configuration file to inject its certificate and proxy settings. When `PIP_CONFIG_FILE` is set, Safe Chain merges its settings into a copy of your file (your original file is never modified) so your `index-url`, credentials, and other options are preserved. When `PIP_CONFIG_FILE` is not set, pip's user-level config (e.g. `~/.config/pip/pip.conf`) might be overridden by Safe Chain's temporary file and your settings will not be picked up.
 
 ## Malware List Base URL
 
@@ -470,7 +480,7 @@ steps:
       name: Install
       script:
         - curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh -s -- --ci
-        - export PATH=~/.safe-chain/shims:$PATH
+        - export PATH=~/.safe-chain/shims:~/.safe-chain/bin:$PATH
         - npm ci
 ```
 
@@ -541,4 +551,16 @@ npm-ci:
 
 # Troubleshooting
 
-Having issues? See the [Troubleshooting Guide](https://help.aikido.dev/code-scanning/aikido-malware-scanning/safe-chain-troubleshooting) for help with common problems.
+Having issues? See the [Troubleshooting Guide](./docs/troubleshooting) for help with common problems.
+
+# Report Issues
+
+If you encounter problems:
+
+1. Visit [GitHub Issues](https://github.com/AikidoSec/safe-chain/issues)
+2. Include:
+   * Operating system and version
+   * Shell type and version
+   * `safe-chain --version` output
+   * Output from verification commands
+   * Verbose logs of the failing command (add the `--safe-chain-logging=verbose` argument)

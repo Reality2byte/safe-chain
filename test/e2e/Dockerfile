@@ -25,6 +25,7 @@ ARG NODE_VERSION=latest
 ARG NPM_VERSION=latest
 ARG YARN_VERSION=latest
 ARG PNPM_VERSION=latest
+ARG RUSH_VERSION=latest
 ARG PYTHON_VERSION=3
 
 SHELL ["/bin/bash", "-c"]
@@ -46,6 +47,7 @@ RUN volta install node@${NODE_VERSION}
 RUN volta install npm@${NPM_VERSION}
 RUN volta install yarn@${YARN_VERSION}
 RUN volta install pnpm@${PNPM_VERSION}
+RUN volta install @microsoft/rush@${RUSH_VERSION}
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
@@ -88,3 +90,5 @@ RUN npm install -g /pkgs/*.tgz
 WORKDIR /testapp
 RUN npm init -y
 
+COPY test/e2e/utils/malwarelistmirror.mjs /utils/malwarelistmirror.mjs
+ENV SAFE_CHAIN_MALWARE_LIST_BASE_URL=http://127.0.0.1:5555
