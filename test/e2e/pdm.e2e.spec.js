@@ -74,7 +74,7 @@ describe("E2E: pdm coverage", () => {
     );
 
     assert.ok(
-      result.output.includes("blocked by safe-chain"),
+      result.output.includes("blocked") && result.output.includes("malicious package downloads"),
       `Expected malware to be blocked. Output was:\n${result.output}`
     );
     assert.ok(
@@ -235,7 +235,7 @@ describe("E2E: pdm coverage", () => {
     );
 
     assert.ok(
-      result.output.includes("blocked by safe-chain"),
+      result.output.includes("blocked") && result.output.includes("malicious package downloads"),
       `Expected malware to be blocked during add (which triggers install). Output was:\n${result.output}`
     );
     assert.ok(
@@ -256,7 +256,7 @@ describe("E2E: pdm coverage", () => {
     );
 
     assert.ok(
-      result.output.includes("blocked by safe-chain"),
+      result.output.includes("blocked") && result.output.includes("malicious package downloads"),
       `Expected malware to be blocked. Output was:\n${result.output}`
     );
     assert.ok(
