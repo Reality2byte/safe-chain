@@ -70,7 +70,7 @@ describe("E2E: pdm coverage", () => {
     await shell.runCommand("cd /tmp/test-pdm-malware && pdm init --non-interactive");
 
     const result = await shell.runCommand(
-      "cd /tmp/test-pdm-malware && pdm add safe-chain-pi-test"
+      "cd /tmp/test-pdm-malware && pdm add numpy==2.4.4"
     );
 
     assert.ok(
@@ -231,7 +231,7 @@ describe("E2E: pdm coverage", () => {
 
     // Add malware package - this will create lock file and attempt download
     const result = await shell.runCommand(
-      "cd /tmp/test-pdm-install-malware && pdm add safe-chain-pi-test 2>&1"
+      "cd /tmp/test-pdm-install-malware && pdm add numpy==2.4.4 2>&1"
     );
 
     assert.ok(
@@ -252,7 +252,7 @@ describe("E2E: pdm coverage", () => {
 
     // Try to add malware alongside safe package
     const result = await shell.runCommand(
-      "cd /tmp/test-pdm-batch && pdm add safe-chain-pi-test requests 2>&1"
+      "cd /tmp/test-pdm-batch && pdm add numpy==2.4.4 requests 2>&1"
     );
 
     assert.ok(
