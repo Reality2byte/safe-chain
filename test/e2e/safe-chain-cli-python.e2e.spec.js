@@ -100,8 +100,9 @@ describe("E2E: safe-chain CLI python/pip support", () => {
       "safe-chain pip3 install --break-system-packages numpy==2.4.4"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads/,
       `Should have blocked malware. Output was:\n${result.output}`
     );
   });

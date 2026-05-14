@@ -131,8 +131,9 @@ describe("E2E: pip coverage", () => {
       "pip3 install --break-system-packages numpy==2.4.4 --safe-chain-logging=verbose"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads:"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(

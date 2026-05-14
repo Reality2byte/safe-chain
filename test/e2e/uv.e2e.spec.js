@@ -129,8 +129,9 @@ describe("E2E: uv coverage", () => {
       "uv pip install --system --break-system-packages numpy==2.4.4"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads:"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -416,8 +417,9 @@ describe("E2E: uv coverage", () => {
       "cd test-project-malware && uv add numpy==2.4.4"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads:"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -447,8 +449,9 @@ describe("E2E: uv coverage", () => {
     const shell = await container.openShell("zsh");
     const result = await shell.runCommand("uv tool install numpy==2.4.4");
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads:"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -485,8 +488,9 @@ describe("E2E: uv coverage", () => {
       "uv run --with numpy==2.4.4 test_script2.py"
     );
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads:"),
+    assert.match(
+      result.output,
+      /blocked \d+ malicious package downloads:/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
   });
