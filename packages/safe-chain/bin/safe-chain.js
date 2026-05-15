@@ -21,7 +21,7 @@ import { main } from "../src/main.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { knownAikidoTools } from "../src/shell-integration/helpers.js";
+import { knownAikidoTools, getPackageManagerList } from "../src/shell-integration/helpers.js";
 import { getInstalledSafeChainDir } from "../src/installLocation.js";
 
 /** @type {string} */
@@ -114,7 +114,7 @@ function writeHelp() {
   ui.writeInformation(
     `- ${chalk.cyan(
       "safe-chain setup",
-    )}: This will setup your shell to wrap safe-chain around npm, npx, yarn, pnpm, pnpx, rush, rushx, bun, bunx, pip and pip3.`,
+    )}: This will setup your shell to wrap safe-chain around ${getPackageManagerList()}.`,
   );
   ui.writeInformation(
     `- ${chalk.cyan(
