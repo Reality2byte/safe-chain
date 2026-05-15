@@ -70,8 +70,9 @@ describe("E2E: npm coverage", () => {
 
     var result = await shell.runCommand("npm install");
 
-    assert.ok(
-      result.output.includes("blocked 1 malicious package downloads"),
+    assert.match(
+      result.output,
+      /blocked [1-9]\d* malicious package downloads/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(

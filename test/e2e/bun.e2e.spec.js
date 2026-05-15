@@ -46,8 +46,9 @@ describe("E2E: bun coverage", () => {
 
     var result = await shell.runCommand("bun install");
 
-    assert.ok(
-      result.output.includes("blocked") && result.output.includes("malicious package downloads"),
+    assert.match(
+      result.output,
+      /blocked [1-9]\d* malicious package downloads/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(
@@ -65,8 +66,9 @@ describe("E2E: bun coverage", () => {
 
     const result = await shell.runCommand("bunx safe-chain-test");
 
-    assert.ok(
-      result.output.includes("blocked") && result.output.includes("malicious package downloads"),
+    assert.match(
+      result.output,
+      /blocked [1-9]\d* malicious package downloads/,
       `Output did not include expected text. Output was:\n${result.output}`
     );
     assert.ok(

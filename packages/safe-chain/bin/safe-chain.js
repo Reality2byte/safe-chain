@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// Strip PKG_EXECPATH from the environment so any child process safe-chain
+// spawns (npm, uv, pip, …) doesn't inherit it. If it leaks into a subsequent
+// safe-chain invocation (e.g. via a shim) the yao-pkg bootstrap would treat
+// argv[1] as a script path and fail with MODULE_NOT_FOUND.
+delete process.env.PKG_EXECPATH;
+
 import chalk from "chalk";
 import { ui } from "../src/environment/userInteraction.js";
 import { setup } from "../src/shell-integration/setup.js";
